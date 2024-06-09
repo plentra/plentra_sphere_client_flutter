@@ -3,13 +3,12 @@ abstract class GetCommerceInfo {
     String appName,
     String appIcon,
     int appType,
-    String firebase,
-    String paymentGatewayName,
-    int paymentGatewayType,
-    String paymentGatewayKey,
     Map<String, dynamic>
         appLocation, // Changed parameter type to Map<String, dynamic>
   );
+  void onfirebaseAuth(String obj);
+  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
+      String paymentGatewayKey);
   void onLoading();
   void onHomeCover(String homeCover);
   void onLoadfinished();

@@ -8,9 +8,6 @@ abstract class CheckoutCart {
     double totalAmount,
     String orderId,
     dynamic clientSecret,
-    String paymentGatewayName,
-    int paymentGatewayType,
-    String paymentGatewayKey,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -21,6 +18,8 @@ abstract class CheckoutCart {
     List<dynamic> items,
   );
   void onPinCodeNotServicable();
+  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
+      String paymentGatewayKey);
   void onLoading();
   void onLoadfinished();
   void onEmpty();
@@ -28,8 +27,6 @@ abstract class CheckoutCart {
   void onAddressNotAvailable();
   void onError(error);
   void onAppNotActive(String appName);
-  void onItemNotInStock();
-  void onItemNotFound();
-  void onCartEmpty();
+
   void onTimeSlots(List<dynamic> dates, List<dynamic> slots);
 }

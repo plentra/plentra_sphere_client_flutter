@@ -13,11 +13,100 @@ import 'abstractClasses/get_launcher.dart';
 import 'abstractClasses/get_page.dart';
 import 'abstractClasses/get_home_load_more.dart';
 import 'abstractClasses/get_home.dart';
+import 'abstractClasses/plentra_login.dart';
 
-class sphereBasic {
+class SphereBasic {
   String appKey;
 
-  sphereBasic(this.appKey);
+  SphereBasic(this.appKey);
+
+  void plentraLogin(
+      String emailId, String password, PlentraLogin plentraLogin) async {
+    plentraLogin.onLoading();
+
+    if (emailId.isEmpty) {
+      plentraLogin.onEmailIdNotProvided();
+      plentraLogin.onLoadfinished();
+      return;
+    }
+
+    if (password.isEmpty) {
+      plentraLogin.onPasswordNotProvided();
+      plentraLogin.onLoadfinished();
+      return;
+    }
+
+    final loginUrl = "https://api.plentratechnologies.com/accounts/index.php";
+    final loginBody = {
+      "email": emailId,
+      "password": password,
+      "action": "getLoginToken",
+    };
+
+    try {
+      final loginResponse = await http.post(
+        Uri.parse(loginUrl),
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: loginBody,
+      );
+
+      final loginData = json.decode(loginResponse.body);
+      int loginCode = loginData['response']['code'];
+      String loginStatus = loginData['response']['status'];
+
+      if (loginCode == 400) {
+        if (loginStatus == "invalid-email") {
+          plentraLogin.onInvalidEmailId();
+          plentraLogin.onLoadfinished();
+          return;
+        }
+
+        if (loginStatus == "invalid-credentials") {
+          plentraLogin.onInvalidCredentials();
+          plentraLogin.onLoadfinished();
+          return;
+        }
+
+        plentraLogin.onError(loginStatus);
+        plentraLogin.onLoadfinished();
+        return;
+      }
+
+      final loginToken = loginData['token'];
+
+      final adminUrl = "https://api.plentratechnologies.com/admin/index.php";
+      final adminBody = {
+        "action": "loggin",
+        "token": loginToken,
+        "type": "auth",
+      };
+
+      final adminResponse = await http.post(
+        Uri.parse(adminUrl),
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: adminBody,
+      );
+
+      final adminData = json.decode(adminResponse.body);
+      int adminCode = adminData['response']['code'];
+      String adminStatus = adminData['response']['status'];
+
+      if (adminCode == 400) {
+        plentraLogin.onError(adminStatus);
+        plentraLogin.onLoadfinished();
+        return;
+      }
+
+      final adminToken = adminData['token'];
+
+      plentraLogin.onSuccess(adminToken);
+      plentraLogin.onLoadfinished();
+    } catch (e) {
+      print(e);
+      plentraLogin.onError(e.toString());
+      plentraLogin.onLoadfinished();
+    }
+  }
 
   Future<void> getCommerceInfo(GetCommerceInfo getCommerceInfo) async {
     getCommerceInfo.onLoading();
@@ -50,14 +139,22 @@ class sphereBasic {
           getCommerceInfo.onHomeCover(info['homeCover']['image']);
         }
 
+        if (info['firebase']['status'] == true) {
+          getCommerceInfo.onfirebaseAuth(jsonEncode(info['firebase']));
+        }
+
+        if (info.containsKey('paymentGatewayKey') &&
+            info.containsKey('paymentGatewayType') &&
+            info.containsKey('paymentGatewayName')) {
+          getCommerceInfo.onPaymentGateway(info['paymentGatewayName'],
+              info['paymentGatewayType'], info['paymentGatewayKey']);
+        }
+
         getCommerceInfo.onResult(
           info['appName'],
           info['appIcon'],
           info['appType'],
-          jsonEncode(info['firebase']),
-          info['paymentGatewayName'],
-          info['paymentGatewayType'],
-          info['paymentGatewayKey'],
+
           info['appLocation'], // Pass the appLocation map directly
         );
         getCommerceInfo.onLoadfinished();
@@ -101,6 +198,11 @@ class sphereBasic {
 
         if (info['homeCover']['status']) {
           getAppInfo.onHomeCover(info['homeCover']['image']);
+        }
+
+        if (info['whatsappChat']['status']) {
+          getAppInfo.onWhatsappChat(info['whatsappChat']['dialingCode']['code'],
+              info['whatsappChat']['phoneNumber']);
         }
 
         getAppInfo.onResult(
@@ -191,7 +293,7 @@ class sphereBasic {
           info['appIcon'],
           jsonData['itemName'],
           jsonData['extras'],
-          jsonData['body'],
+          utf8.decode(base64.decode(jsonData['body'])),
           jsonData['itemCategoryName'],
           jsonData['itemCategory'],
           jsonData['itemImages'],
@@ -356,6 +458,7 @@ class sphereBasic {
           });
 
           getItemsLoadMore.onResult(
+            itemCategory,
             totalItemCount,
             itemsInThisPage,
             (info['itemsPerPage']),
@@ -461,6 +564,7 @@ class sphereBasic {
           });
 
           getItems.onResult(
+            itemCategory,
             info['appName'],
             info['appIcon'],
             info['categoryName'],
@@ -1028,8 +1132,6 @@ class sphereBasic {
           });
 
           getHomeLoadMore.onResult(
-            info['appName'],
-            info['appIcon'],
             totalItemCount,
             itemsInThisPage,
             info['itemsPerPage'],

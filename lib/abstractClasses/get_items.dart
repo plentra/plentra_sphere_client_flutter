@@ -1,5 +1,6 @@
 abstract class GetItems {
   void onResult(
+    String categoryId,
     String appName,
     String appIcon,
     String categoryName,

@@ -10,4 +10,5 @@ abstract class GetAppInfo {
   void onLoadfinished();
   void onError(dynamic error);
   void onAppNotActive(String appName);
+  void onWhatsappChat(int dialingCode, int phoneNumber);
 }

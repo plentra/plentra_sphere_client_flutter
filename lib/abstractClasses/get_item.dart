@@ -28,5 +28,5 @@ abstract class GetItem {
     String variantImage,
     Map<String, dynamic> variantImages,
   );
-  void onVariants(Map<String, dynamic> variants);
+  void onVariants(List<dynamic> variants);
 }

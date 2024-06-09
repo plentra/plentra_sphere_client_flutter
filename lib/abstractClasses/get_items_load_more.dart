@@ -1,5 +1,6 @@
 abstract class GetItemsLoadMore {
   void onResult(
+    String categoryId,
     int totalItemCount,
     int itemsInThisPage,
     int itemsPerPage,

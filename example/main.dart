@@ -7,13 +7,67 @@ void main() {
   String token =
       "eyJhbGciOiJSUzI1NiIsImtpZCI6IjNiYjg3ZGNhM2JjYjY5ZDcyYjZjYmExYjU5YjMzY2M1MjI5N2NhOGQiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU3llZCBZdW51cyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQWNIVHRlWGRrNEU4YThLMmhtdEtGS2FZMTV2SGNpWFZNNHd5LWVZTzVNSkNKYzBRUlk9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYXVzcGlmb3gtc3RvcmUiLCJhdWQiOiJhdXNwaWZveC1zdG9yZSIsImF1dGhfdGltZSI6MTcwOTYxNTU0MywidXNlcl9pZCI6IkxPdUxTZ1dpcFVWUDY1MkJRWExPdzZ0akxRdTIiLCJzdWIiOiJMT3VMU2dXaXBVVlA2NTJCUVhMT3c2dGpMUXUyIiwiaWF0IjoxNzA5NjE1NTQzLCJleHAiOjE3MDk2MTkxNDMsImVtYWlsIjoic3llZC55dW51cy41ODFAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMTQ0MTMwMjM2NTA0NjI4Njg4MzQiXSwiZW1haWwiOlsic3llZC55dW51cy41ODFAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.CCVT0eCpC2o8XfNBYI2ftl99s1JHSTtp7Z9A9ZsUgJxQvnVI_YLku4cuvqN0hRR7GhWin947zpJKneY9v2k7S8ZaCleW4shaUu5-mdv1TsncIJDcMVFUPCW8HkImHIccFKd50Vvq0R5Xi8p5AsCC3RPIl2hav2B8njQbHFTyeAfUldS6Z2dLsdkc9N6PpINghi5gvAvqQPfd7KOEi88m-mFyeI_9psf5RJWcAeLKwn2xluv74taAnkjbPV0Y8eIo5vl1VCTU86oIzxTVxeafK9MvG6fsqnOuDWpaOYhhI_G-4kkjgrydLMpMdCD4KD_ifTY2HjEk5am1VvtHOxuMiQ";
 
-  sphereCommerce ecommerce = sphereCommerce(appKey, token);
+  SphereCommerce ecommerce = SphereCommerce(appKey, token);
   GetWishlistImplementation getWishlistImplementation =
       GetWishlistImplementation();
 
   int page = 1; // Change this to the desired page number
 
   ecommerce.getWishlist(page, getWishlistImplementation);
+}
+
+// void main() {
+//   String emailId = "your_email@example.com"; // Change this to your email
+//   String password = "your_password"; // Change this to your password
+
+//   PlentraLoginImplementation plentraLoginImplementation =
+//       PlentraLoginImplementation();
+
+//   String appKey = "Njg3OTU4NjIzNWRlZjYwMjA1OTE5N2FiN2ExMTM5ZDE=";
+//   SphereBasic sphereClient = new SphereBasic(appKey);
+//   sphereClient.plentraLogin(emailId, password, plentraLoginImplementation);
+// }
+
+class PlentraLoginImplementation implements PlentraLogin {
+  @override
+  void onSuccess(String token) {
+    print("Login successful. Token: $token");
+  }
+
+  @override
+  void onLoading() {
+    print("Logging in...");
+  }
+
+  @override
+  void onInvalidEmailId() {
+    print("Invalid email ID.");
+  }
+
+  @override
+  void onEmailIdNotProvided() {
+    print("Email ID not provided.");
+  }
+
+  @override
+  void onPasswordNotProvided() {
+    print("Password not provided.");
+  }
+
+  @override
+  void onInvalidCredentials() {
+    print("Invalid credentials.");
+  }
+
+  @override
+  void onLoadfinished() {
+    print("Login finished.");
+  }
+
+  @override
+  void onError(dynamic error) {
+    print("Error: $error");
+  }
 }
 
 class GetWishlistImplementation implements GetWishlist {
@@ -614,9 +668,6 @@ class CheckoutCartImplementation implements CheckoutCart {
     double totalAmount,
     String orderId,
     dynamic clientSecret,
-    String paymentGatewayName,
-    int paymentGatewayType,
-    String paymentGatewayKey,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -635,9 +686,7 @@ class CheckoutCartImplementation implements CheckoutCart {
     print("Total Amount: $totalAmount");
     print("Order ID: $orderId");
     print("Client Secret: $clientSecret");
-    print("Payment Gateway Name: $paymentGatewayName");
-    print("Payment Gateway Type: $paymentGatewayType");
-    print("Payment Gateway Key: $paymentGatewayKey");
+
     print("Customer Name: $customerName");
     print("Customer Address: $customerAddress");
     print("Customer City: $customerCity");
@@ -651,6 +700,14 @@ class CheckoutCartImplementation implements CheckoutCart {
   @override
   void onPinCodeNotServicable() {
     print("Pin code not serviceable.");
+  }
+
+  @override
+  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
+      String paymentGatewayKey) {
+    print("PaymentGateway: $paymentGatewayName");
+    print("PaymentGatewayType: $paymentGatewayType");
+    print("PaymentGatewayKey: $paymentGatewayKey");
   }
 
   @override
@@ -689,21 +746,6 @@ class CheckoutCartImplementation implements CheckoutCart {
   }
 
   @override
-  void onItemNotInStock() {
-    print("Item not in stock.");
-  }
-
-  @override
-  void onItemNotFound() {
-    print("Item not found.");
-  }
-
-  @override
-  void onCartEmpty() {
-    print("Cart is empty.");
-  }
-
-  @override
   void onTimeSlots(List<dynamic> dates, List<dynamic> slots) {
     print("Time Slots:");
     print("Dates: $dates");
@@ -722,9 +764,6 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
     double totalAmount,
     String orderId,
     dynamic clientSecret,
-    String paymentGatewayName,
-    int paymentGatewayType,
-    String paymentGatewayKey,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -742,9 +781,7 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
     print("Total Amount: $totalAmount");
     print("Order ID: $orderId");
     print("Client Secret: $clientSecret");
-    print("Payment Gateway Name: $paymentGatewayName");
-    print("Payment Gateway Type: $paymentGatewayType");
-    print("Payment Gateway Key: $paymentGatewayKey");
+
     print("Customer Name: $customerName");
     print("Customer Address: $customerAddress");
     print("Customer City: $customerCity");
@@ -761,13 +798,16 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
   }
 
   @override
-  void onVariantNotInStock() {
-    print("Variant not in stock");
+  void onPinCodeNotServicable() {
+    print("Pincode not serviceable");
   }
 
   @override
-  void onPinCodeNotServicable() {
-    print("Pincode not serviceable");
+  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
+      String paymentGatewayKey) {
+    print("PaymentGateway: $paymentGatewayName");
+    print("PaymentGatewayType: $paymentGatewayType");
+    print("PaymentGatewayKey: $paymentGatewayKey");
   }
 
   @override
@@ -806,21 +846,6 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
   }
 
   @override
-  void onItemNotInStock() {
-    print("Item not in stock");
-  }
-
-  @override
-  void onItemNotFound() {
-    print("Item not found");
-  }
-
-  @override
-  void onCartEmpty() {
-    print("Cart empty");
-  }
-
-  @override
   void onTimeSlots(List<dynamic> dates, List<dynamic> slots) {
     print("Dates: $dates");
     print("Slots: $slots");
@@ -838,9 +863,6 @@ class CheckoutItemImplementation implements CheckoutItem {
     double totalAmount,
     String orderId,
     dynamic clientSecret,
-    String paymentGatewayName,
-    int paymentGatewayType,
-    String paymentGatewayKey,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -859,9 +881,7 @@ class CheckoutItemImplementation implements CheckoutItem {
     print("Total Amount: $totalAmount");
     print("Order ID: $orderId");
     print("Client Secret: $clientSecret");
-    print("Payment Gateway Name: $paymentGatewayName");
-    print("Payment Gateway Type: $paymentGatewayType");
-    print("Payment Gateway Key: $paymentGatewayKey");
+
     print("Customer Name: $customerName");
     print("Customer Address: $customerAddress");
     print("Customer City: $customerCity");
@@ -875,6 +895,14 @@ class CheckoutItemImplementation implements CheckoutItem {
   @override
   void onPinCodeNotServicable() {
     print("Pin code not serviceable.");
+  }
+
+  @override
+  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
+      String paymentGatewayKey) {
+    print("PaymentGateway: $paymentGatewayName");
+    print("PaymentGatewayType: $paymentGatewayType");
+    print("PaymentGatewayKey: $paymentGatewayKey");
   }
 
   @override
@@ -910,21 +938,6 @@ class CheckoutItemImplementation implements CheckoutItem {
   @override
   void onAppNotActive(String appName) {
     print("App $appName is not active.");
-  }
-
-  @override
-  void onItemNotInStock() {
-    print("Item not in stock.");
-  }
-
-  @override
-  void onItemNotFound() {
-    print("Item not found.");
-  }
-
-  @override
-  void onCartEmpty() {
-    print("Cart is empty.");
   }
 
   @override
@@ -1180,15 +1193,11 @@ class GetHomeImplementation implements GetHome {
 class GetHomeLoadMoreImplementation implements GetHomeLoadMore {
   @override
   void onResult(
-    String appName,
-    String appIcon,
     int totalItemCount,
     int itemsInThisPage,
     int itemsPerPage,
     List<dynamic> items,
   ) {
-    print("App Name: $appName");
-    print("App Icon: $appIcon");
     print("Total Item Count: $totalItemCount");
     print("Items in This Page: $itemsInThisPage");
     print("Items Per Page: $itemsPerPage");
@@ -1206,40 +1215,8 @@ class GetHomeLoadMoreImplementation implements GetHomeLoadMore {
   }
 
   @override
-  void onPopup(String popupTitle, String popupMessage) {
-    print("Popup: $popupTitle - $popupMessage");
-  }
-
-  @override
-  void onAnnouncement(String announcementBody) {
-    print("Announcement: $announcementBody");
-  }
-
-  @override
-  void onMessage(String messageTitle, String messageBody) {
-    print("Message: $messageTitle - $messageBody");
-  }
-
-  @override
-  void onAppLocation(String appLocation, double latitude, double longitude) {
-    print(
-        "App Location: $appLocation, Latitude: $latitude, Longitude: $longitude");
-  }
-
-  @override
   void onNextPage(int nextPage) {
     print("Next Page: $nextPage");
-  }
-
-  @override
-  void onHomeCover(String cover) {
-    print("Home Cover: $cover");
-  }
-
-  @override
-  void onFooter(String text, List<Map<String, dynamic>> pageLinks) {
-    print("Footer Text: $text");
-    print("Page Links: $pageLinks");
   }
 
   @override
@@ -1270,11 +1247,6 @@ class GetHomeLoadMoreImplementation implements GetHomeLoadMore {
   @override
   void onNoNextPage() {
     print("No next page available.");
-  }
-
-  @override
-  void onItemRail(List<String> categoryIds) {
-    print("Item Rail Category IDs: $categoryIds");
   }
 }
 
@@ -1613,6 +1585,7 @@ class GetItemsSearchImplementation implements GetItemsSearch {
 class GetItemsImplementation implements GetItems {
   @override
   void onResult(
+    String categoryId,
     String appName,
     String appIcon,
     String categoryName,
@@ -1699,6 +1672,7 @@ class GetItemsImplementation implements GetItems {
 class GetItemsLoadMoreImplementation implements GetItemsLoadMore {
   @override
   void onResult(
+    String categoryId,
     int totalItemCount,
     int itemsInThisPage,
     int itemsPerPage,
@@ -1905,7 +1879,7 @@ class GetItemImplementation implements GetItem {
   }
 
   @override
-  void onVariants(Map<String, dynamic> variants) {
+  void onVariants(List<dynamic> variants) {
     print("Variants: $variants");
   }
 }
@@ -1948,6 +1922,12 @@ class GetAppInfoImplementation implements GetAppInfo {
   void onAppNotActive(String appName) {
     print("App not active: $appName");
   }
+
+  @override
+  void onWhatsappChat(int dialingCode, int phoneNumber) {
+    print(
+        "Dialing code: ${dialingCode.toString()}. Phone Number:  ${phoneNumber.toString()}");
+  }
 }
 
 class GetCommerceInfoImplementation implements GetCommerceInfo {
@@ -1956,20 +1936,12 @@ class GetCommerceInfoImplementation implements GetCommerceInfo {
     String appName,
     String appIcon,
     int appType,
-    String firebase,
-    String paymentGatewayName,
-    int paymentGatewayType,
-    String paymentGatewayKey,
     Map<String, dynamic>
         appLocation, // Changed parameter type to Map<String, dynamic>
   ) {
     print("appName: $appName, "
         "appIcon: $appIcon, "
         "appType: $appType, "
-        "firebase: $firebase, "
-        "paymentGatewayName: $paymentGatewayName, "
-        "paymentGatewayType: $paymentGatewayType, "
-        "paymentGatewayKey: $paymentGatewayKey, "
         "appLocation: $appLocation"); // Print the map directly
   }
 
@@ -1996,5 +1968,18 @@ class GetCommerceInfoImplementation implements GetCommerceInfo {
   @override
   void onAppNotActive(String appName) {
     print("App not active: $appName");
+  }
+
+  @override
+  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
+      String paymentGatewayKey) {
+    print("PaymentGateway: $paymentGatewayName");
+    print("PaymentGatewayType: $paymentGatewayType");
+    print("PaymentGatewayKey: $paymentGatewayKey");
+  }
+
+  @override
+  void onfirebaseAuth(String obj) {
+    print("firebase object: $obj");
   }
 }

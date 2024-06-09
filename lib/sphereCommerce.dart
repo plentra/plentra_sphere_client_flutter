@@ -23,11 +23,11 @@ import 'abstractClasses/remove_from_wishlist.dart';
 import 'abstractClasses/add_to_wishlist.dart';
 import 'abstractClasses/get_wishlist.dart';
 
-class sphereCommerce {
+class SphereCommerce {
   String appKey;
   String token;
 
-  sphereCommerce(this.appKey, this.token);
+  SphereCommerce(this.appKey, this.token);
 
   Map<String, dynamic> check() {
     if (appKey.length == 0) {
@@ -278,8 +278,12 @@ class sphereCommerce {
           checkout.onLoadfinished();
           return;
         }
-        if (status == "no-addresses-available" ||
-            status == "item-not-found" ||
+        if (status == "no-addresses-available") {
+          checkout.onAddressNotAvailable();
+          checkout.onLoadfinished();
+          return;
+        }
+        if (status == "item-not-found" ||
             status == "item-not-in-stock" ||
             status == "cart-empty") {
           checkout.onError(status);
@@ -302,6 +306,13 @@ class sphereCommerce {
             info['timeSlots']['dates'], info['timeSlots']['slots']);
       }
 
+      if (info.containsKey('paymentGatewayKey') &&
+          info.containsKey('paymentGatewayType') &&
+          info.containsKey('paymentGatewayName')) {
+        checkout.onPaymentGateway(info['paymentGatewayName'],
+            info['paymentGatewayType'], info['paymentGatewayKey']);
+      }
+
       checkout.onResult(
         info['appName'],
         info['appIcon'],
@@ -311,9 +322,6 @@ class sphereCommerce {
         info['totalAmount'].toDouble(),
         info['orderId'],
         info['clientSecret'],
-        info['paymentGatewayName'],
-        info['paymentGatewayType'],
-        info['paymentGatewayKey'],
         customerInfo['name'],
         customerInfo['address'],
         customerInfo['city'],
@@ -364,11 +372,7 @@ class sphereCommerce {
           checkout.onLoadfinished();
           return;
         }
-        if (status == "variant-not-in-stock") {
-          checkout.onVariantNotInStock();
-          checkout.onLoadfinished();
-          return;
-        }
+
         if (status == "please-login" || status == "session-expired") {
           checkout.onNotLoggedIn();
           checkout.onLoadfinished();
@@ -384,8 +388,12 @@ class sphereCommerce {
           checkout.onLoadfinished();
           return;
         }
-        if (status == "no-addresses-available" ||
-            status == "item-not-found" ||
+        if (status == "no-addresses-available") {
+          checkout.onAddressNotAvailable();
+          checkout.onLoadfinished();
+          return;
+        }
+        if (status == "item-not-found" ||
             status == "item-not-in-stock" ||
             status == "cart-empty") {
           checkout.onError(status);
@@ -408,6 +416,13 @@ class sphereCommerce {
             info['timeSlots']['dates'], info['timeSlots']['slots']);
       }
 
+      if (info.containsKey('paymentGatewayKey') &&
+          info.containsKey('paymentGatewayType') &&
+          info.containsKey('paymentGatewayName')) {
+        checkout.onPaymentGateway(info['paymentGatewayName'],
+            info['paymentGatewayType'], info['paymentGatewayKey']);
+      }
+
       checkout.onResult(
         info['appName'],
         info['appIcon'],
@@ -417,9 +432,6 @@ class sphereCommerce {
         info['totalAmount'].toDouble(),
         info['orderId'],
         info['clientSecret'],
-        info['paymentGatewayName'],
-        info['paymentGatewayType'],
-        info['paymentGatewayKey'],
         customerInfo['name'],
         customerInfo['address'],
         customerInfo['city'],
@@ -476,8 +488,12 @@ class sphereCommerce {
           checkout.onLoadfinished();
           return;
         }
-        if (status == "no-addresses-available" ||
-            status == "item-not-found" ||
+        if (status == "no-addresses-available") {
+          checkout.onAddressNotAvailable();
+          checkout.onLoadfinished();
+          return;
+        }
+        if (status == "item-not-found" ||
             status == "item-not-in-stock" ||
             status == "cart-empty") {
           checkout.onError(status);
@@ -500,6 +516,12 @@ class sphereCommerce {
             info['timeSlots']['dates'], info['timeSlots']['slots']);
       }
 
+      if (info.containsKey('paymentGatewayKey') &&
+          info.containsKey('paymentGatewayType') &&
+          info.containsKey('paymentGatewayName')) {
+        checkout.onPaymentGateway(info['paymentGatewayName'],
+            info['paymentGatewayType'], info['paymentGatewayKey']);
+      }
       checkout.onResult(
         info['appName'],
         info['appIcon'],
@@ -509,9 +531,6 @@ class sphereCommerce {
         info['totalAmount'].toDouble(),
         info['orderId'],
         info['clientSecret'],
-        info['paymentGatewayName'],
-        info['paymentGatewayType'],
-        info['paymentGatewayKey'],
         customerInfo['name'],
         customerInfo['address'],
         customerInfo['city'],
