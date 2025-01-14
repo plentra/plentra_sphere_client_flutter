@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:plentra_sphere_client/abstractClasses/confirmStripePayment.dart';
 //ecommerce
 import 'abstractClasses/confirmCOD.dart';
 import 'abstractClasses/add_time_slots.dart';
@@ -22,6 +23,8 @@ import 'abstractClasses/clear_wishlist.dart';
 import 'abstractClasses/remove_from_wishlist.dart';
 import 'abstractClasses/add_to_wishlist.dart';
 import 'abstractClasses/get_wishlist.dart';
+import 'abstractClasses/confirmPhonePePayment.dart';
+import 'abstractClasses/confirmRazorpayPayment.dart';
 
 class SphereCommerce {
   String appKey;
@@ -42,8 +45,9 @@ class SphereCommerce {
   void getOrders(int page, GetOrders getOrders) async {
     getOrders.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'orders',
       "appKey": appKey,
       "action": "getOrders",
       "page": page.toString(),
@@ -117,8 +121,9 @@ class SphereCommerce {
       String token) async {
     confirmCOD.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'payment',
       "appKey": appKey,
       "action": "confirmCOD",
       "orderId": orderId,
@@ -174,12 +179,206 @@ class SphereCommerce {
     }
   }
 
+  void confirmPhonePePayment(
+    String appKey,
+    String token,
+    String orderId,
+    ConfirmPhonePePayment confirmPhonePePayment,
+  ) async {
+    confirmPhonePePayment.onLoading();
+
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
+    final body = {
+      'class': 'payment',
+      "appKey": appKey,
+      "action": "confirmPhonePePayment",
+      "orderId": orderId,
+      'isMobile': "yes",
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Bearer $token",
+        },
+        body: body,
+      );
+
+      final data = json.decode(response.body);
+
+      int code = data['response']['code'];
+      String status = data['response']['status'];
+
+      if (code == 400) {
+        if (status == "app-expired") {
+          confirmPhonePePayment.onAppNotActive(data['info']['appName']);
+          confirmPhonePePayment.onLoadfinished();
+          return;
+        }
+        // if (status == "session-expired") {
+        //   confirmPhonePePayment.onNotLoggedIn();
+        //   confirmPhonePePayment.onLoadfinished(ß);
+        //   return;
+        // }
+
+        if (status == "invalid-order") {
+          confirmPhonePePayment.onInvalidOrder();
+          confirmPhonePePayment.onLoadfinished();
+          return;
+        }
+
+        confirmPhonePePayment.onError(status);
+        confirmPhonePePayment.onLoadfinished();
+        return;
+      }
+
+      confirmPhonePePayment.onSuccess(status);
+      confirmPhonePePayment.onLoadfinished();
+    } catch (e) {
+      confirmPhonePePayment.onError(e.toString());
+      confirmPhonePePayment.onLoadfinished();
+    }
+  }
+
+  void confirmRazorpayPayment(
+    String appKey,
+    String token,
+    String orderId,
+    String paymentId,
+    String signature,
+    ConfirmRazorpayPayment confirmRazorpayPayment,
+  ) async {
+    confirmRazorpayPayment.onLoading();
+
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
+    final body = {
+      'class': 'payment',
+      "appKey": appKey,
+      "action": "confirmRazorpayPayment",
+      "razorpay_order_id": orderId,
+      "razorpay_payment_id": paymentId,
+      "razorpay_signature": signature,
+      'isMobile': "yes",
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Bearer $token",
+        },
+        body: body,
+      );
+
+      final data = json.decode(response.body);
+
+      int code = data['response']['code'];
+      String status = data['response']['status'];
+
+      if (code == 400) {
+        if (status == "app-expired") {
+          confirmRazorpayPayment.onAppNotActive(data['info']['appName']);
+          confirmRazorpayPayment.onLoadfinished();
+          return;
+        }
+        // if (status == "session-expired") {
+        //   confirmRazorpayPayment.onNotLoggedIn();
+        //   confirmRazorpayPayment.onLoadfinished(ß);
+        //   return;
+        // }
+
+        if (status == "invalid-order") {
+          confirmRazorpayPayment.onInvalidOrder();
+          confirmRazorpayPayment.onLoadfinished();
+          return;
+        }
+
+        confirmRazorpayPayment.onError(status);
+        confirmRazorpayPayment.onLoadfinished();
+        return;
+      }
+
+      confirmRazorpayPayment.onSuccess(status);
+      confirmRazorpayPayment.onLoadfinished();
+    } catch (e) {
+      confirmRazorpayPayment.onError(e.toString());
+      confirmRazorpayPayment.onLoadfinished();
+    }
+  }
+
+  void confirmStripePayment(
+    String appKey,
+    String token,
+    String orderId,
+    ConfirmStripePayment confirmStripePayment,
+  ) async {
+    confirmStripePayment.onLoading();
+
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
+    final body = {
+      'class': 'payment',
+      "appKey": appKey,
+      "action": "confirmStripePayment",
+      "orderId": orderId,
+      'isMobile': "yes",
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Bearer $token",
+        },
+        body: body,
+      );
+
+      final data = json.decode(response.body);
+
+      int code = data['response']['code'];
+      String status = data['response']['status'];
+
+      if (code == 400) {
+        if (status == "app-expired") {
+          confirmStripePayment.onAppNotActive(data['info']['appName']);
+          confirmStripePayment.onLoadfinished();
+          return;
+        }
+        // if (status == "session-expired") {
+        //   confirmStripePayment.onNotLoggedIn();
+        //   confirmStripePayment.onLoadfinished(ß);
+        //   return;
+        // }
+
+        if (status == "invalid-order") {
+          confirmStripePayment.onInvalidOrder();
+          confirmStripePayment.onLoadfinished();
+          return;
+        }
+
+        confirmStripePayment.onError(status);
+        confirmStripePayment.onLoadfinished();
+        return;
+      }
+
+      confirmStripePayment.onSuccess(status);
+      confirmStripePayment.onLoadfinished();
+    } catch (e) {
+      confirmStripePayment.onError(e.toString());
+      confirmStripePayment.onLoadfinished();
+    }
+  }
+
   void addTimeSlot(String orderId, String slotId, String dateIndex,
       AddTimeSlots addTimeSlot) async {
     addTimeSlot.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'checkout',
       "appKey": appKey,
       "action": "addTimeSlot",
       "orderId": orderId,
@@ -234,10 +433,12 @@ class SphereCommerce {
   void checkoutItem(String itemId, int quantity, CheckoutItem checkout) async {
     checkout.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'checkout',
       "appKey": appKey,
       "action": "checkout",
+      "isMobile": "yes",
       "hostname": "window.location.hostname",
       "itemId": itemId,
       "quantity": quantity.toString(),
@@ -284,12 +485,16 @@ class SphereCommerce {
           return;
         }
         if (status == "item-not-found" ||
-            status == "item-not-in-stock" ||
+            status == "not-in-stock" ||
             status == "cart-empty") {
           checkout.onError(status);
           checkout.onLoadfinished();
           return;
         }
+
+        checkout.onError(status);
+        checkout.onLoadfinished();
+        return;
       }
 
       Map<String, dynamic> info = data['info'];
@@ -306,11 +511,25 @@ class SphereCommerce {
             info['timeSlots']['dates'], info['timeSlots']['slots']);
       }
 
-      if (info.containsKey('paymentGatewayKey') &&
-          info.containsKey('paymentGatewayType') &&
-          info.containsKey('paymentGatewayName')) {
-        checkout.onPaymentGateway(info['paymentGatewayName'],
-            info['paymentGatewayType'], info['paymentGatewayKey']);
+      // if (info.containsKey('paymentGatewayKey') &&
+      //     info.containsKey('paymentGatewayType') &&
+      //     info.containsKey('paymentGatewayName')) {
+      //   checkout.onPaymentGateway(info['paymentGatewayName'],
+      //       info['paymentGatewayType'], info['paymentGatewayKey']);
+      // }
+
+      if (info.containsKey("paymentGateway")) {
+        var paymentGateway = info['paymentGateway'];
+        if (paymentGateway['type'] == 0) {
+          checkout.onRazorpay(paymentGateway['key']);
+        }
+        if (paymentGateway['type'] == 1) {
+          checkout.onStripe(
+              paymentGateway['clientSecret'], paymentGateway['publishableKey']);
+        }
+        if (paymentGateway['type'] == 2) {
+          checkout.onPhonePe(paymentGateway['paymentLink']);
+        }
       }
 
       checkout.onResult(
@@ -321,14 +540,13 @@ class SphereCommerce {
         info['currencySymbol'],
         info['totalAmount'].toDouble(),
         info['orderId'],
-        info['clientSecret'],
         customerInfo['name'],
         customerInfo['address'],
         customerInfo['city'],
         customerInfo['state'],
         customerInfo['postalCode'],
         customerInfo['phoneNumber'],
-        info['paymentType'],
+        info['paymentGateway']['paymentType'],
         data['items'],
       );
       checkout.onLoadfinished();
@@ -342,10 +560,12 @@ class SphereCommerce {
       CheckoutItemVariant checkout) async {
     checkout.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'checkout',
       "appKey": appKey,
       "action": "checkout",
+      "isMobile": "yes",
       "hostname": "window.location.hostname",
       "itemId": itemId,
       "variantTag": variantTag,
@@ -394,12 +614,16 @@ class SphereCommerce {
           return;
         }
         if (status == "item-not-found" ||
-            status == "item-not-in-stock" ||
+            status == "not-in-stock" ||
             status == "cart-empty") {
           checkout.onError(status);
           checkout.onLoadfinished();
           return;
         }
+
+        checkout.onError(status);
+        checkout.onLoadfinished();
+        return;
       }
 
       Map<String, dynamic> info = data['info'];
@@ -416,11 +640,25 @@ class SphereCommerce {
             info['timeSlots']['dates'], info['timeSlots']['slots']);
       }
 
-      if (info.containsKey('paymentGatewayKey') &&
-          info.containsKey('paymentGatewayType') &&
-          info.containsKey('paymentGatewayName')) {
-        checkout.onPaymentGateway(info['paymentGatewayName'],
-            info['paymentGatewayType'], info['paymentGatewayKey']);
+      // if (info.containsKey('paymentGatewayKey') &&
+      //     info.containsKey('paymentGatewayType') &&
+      //     info.containsKey('paymentGatewayName')) {
+      //   checkout.onPaymentGateway(info['paymentGatewayName'],
+      //       info['paymentGatewayType'], info['paymentGatewayKey']);
+      // }
+
+      if (info.containsKey("paymentGateway")) {
+        var paymentGateway = info['paymentGateway'];
+        if (paymentGateway['type'] == 0) {
+          checkout.onRazorpay(paymentGateway['key']);
+        }
+        if (paymentGateway['type'] == 1) {
+          checkout.onStripe(
+              paymentGateway['clientSecret'], paymentGateway['publishableKey']);
+        }
+        if (paymentGateway['type'] == 2) {
+          checkout.onPhonePe(paymentGateway['paymentLink']);
+        }
       }
 
       checkout.onResult(
@@ -431,14 +669,13 @@ class SphereCommerce {
         info['currencySymbol'],
         info['totalAmount'].toDouble(),
         info['orderId'],
-        info['clientSecret'],
         customerInfo['name'],
         customerInfo['address'],
         customerInfo['city'],
         customerInfo['state'],
         customerInfo['postalCode'],
         customerInfo['phoneNumber'],
-        info['paymentType'],
+        info['paymentGateway']['paymentType'],
         data['items'],
       );
       checkout.onLoadfinished();
@@ -451,10 +688,12 @@ class SphereCommerce {
   void checkoutCart(CheckoutCart checkout) async {
     checkout.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'checkout',
       "appKey": appKey,
       "action": "checkout",
+      "isMobile": "yes",
       "hostname": "window.location.hostname",
     };
 
@@ -494,12 +733,15 @@ class SphereCommerce {
           return;
         }
         if (status == "item-not-found" ||
-            status == "item-not-in-stock" ||
+            status == "not-in-stock" ||
             status == "cart-empty") {
           checkout.onError(status);
           checkout.onLoadfinished();
           return;
         }
+
+        checkout.onError(status);
+        checkout.onLoadfinished();
       }
 
       Map<String, dynamic> info = data['info'];
@@ -516,11 +758,25 @@ class SphereCommerce {
             info['timeSlots']['dates'], info['timeSlots']['slots']);
       }
 
-      if (info.containsKey('paymentGatewayKey') &&
-          info.containsKey('paymentGatewayType') &&
-          info.containsKey('paymentGatewayName')) {
-        checkout.onPaymentGateway(info['paymentGatewayName'],
-            info['paymentGatewayType'], info['paymentGatewayKey']);
+      // if (info.containsKey('paymentGatewayKey') &&
+      //     info.containsKey('paymentGatewayType') &&
+      //     info.containsKey('paymentGatewayName')) {
+      //   checkout.onPaymentGateway(info['paymentGatewayName'],
+      //       info['paymentGatewayType'], info['paymentGatewayKey']);
+      // }
+
+      if (info.containsKey("paymentGateway")) {
+        var paymentGateway = info['paymentGateway'];
+        if (paymentGateway['type'] == 0) {
+          checkout.onRazorpay(paymentGateway['key']);
+        }
+        if (paymentGateway['type'] == 1) {
+          checkout.onStripe(
+              paymentGateway['clientSecret'], paymentGateway['publishableKey']);
+        }
+        if (paymentGateway['type'] == 2) {
+          checkout.onPhonePe(paymentGateway['paymentLink']);
+        }
       }
       checkout.onResult(
         info['appName'],
@@ -530,14 +786,13 @@ class SphereCommerce {
         info['currencySymbol'],
         info['totalAmount'].toDouble(),
         info['orderId'],
-        info['clientSecret'],
         customerInfo['name'],
         customerInfo['address'],
         customerInfo['city'],
         customerInfo['state'],
         customerInfo['postalCode'],
         customerInfo['phoneNumber'],
-        info['paymentType'],
+        info['paymentGateway']['paymentType'],
         data['items'],
       );
       checkout.onLoadfinished();
@@ -550,8 +805,9 @@ class SphereCommerce {
   void addAddress(String address, AddAddress addAddress) async {
     addAddress.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'address',
       "appKey": appKey,
       "action": "addAddress",
       "address": address,
@@ -604,8 +860,9 @@ class SphereCommerce {
       UpdateAddress updateAddress) async {
     updateAddress.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'address',
       "appKey": appKey,
       "action": "updateAddress",
       "addressId": addressId,
@@ -654,8 +911,9 @@ class SphereCommerce {
   void setDefault(String addressId, SetDefault setDefault) async {
     setDefault.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'address',
       "appKey": appKey,
       "action": "setDefault",
       "addressId": addressId,
@@ -703,8 +961,9 @@ class SphereCommerce {
   void removeAddress(String addressId, RemoveAddress removeAddress) async {
     removeAddress.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'address',
       "appKey": appKey,
       "action": "removeAddress",
       "addressId": addressId,
@@ -752,8 +1011,9 @@ class SphereCommerce {
   void getAddresses(GetAddresses getAddresses) async {
     getAddresses.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'address',
       "appKey": appKey,
       "action": "getAddresses",
     };
@@ -822,8 +1082,9 @@ class SphereCommerce {
   void clearCart(ClearCart clearCart) async {
     clearCart.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'cart',
       "appKey": appKey,
       "action": "clearCart",
     };
@@ -870,8 +1131,9 @@ class SphereCommerce {
   void removeFromCart(String itemId, RemoveFromCart removeFromCart) async {
     removeFromCart.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'cart',
       "appKey": appKey,
       "action": "removeFromCart",
       "itemId": itemId,
@@ -919,8 +1181,9 @@ class SphereCommerce {
   void updateCart(String itemId, int quantity, UpdateCart updateCart) async {
     updateCart.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'cart',
       "appKey": appKey,
       "action": "updateCart",
       "itemId": itemId,
@@ -969,8 +1232,9 @@ class SphereCommerce {
   void addToCart(String itemId, int quantity, AddToCart addToCart) async {
     addToCart.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'cart',
       "appKey": appKey,
       "action": "addToCart",
       "itemId": itemId,
@@ -1016,7 +1280,7 @@ class SphereCommerce {
           return;
         }
 
-        if (status == "item-not-in-stock") {
+        if (status == "not-in-stock") {
           addToCart.onItemNotInStock();
           addToCart.onLoadfinished();
           return;
@@ -1045,8 +1309,9 @@ class SphereCommerce {
       AddToCartVariant addToCartVariant) async {
     addToCartVariant.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'cart',
       "appKey": appKey,
       "action": "addToCart",
       "itemId": itemId,
@@ -1087,7 +1352,7 @@ class SphereCommerce {
           return;
         }
 
-        if (status == "variant-not-in-stock") {
+        if (status == "not-in-stock") {
           addToCartVariant.onVariantNotInStock();
           addToCartVariant.onLoadfinished();
           return;
@@ -1121,8 +1386,9 @@ class SphereCommerce {
   void getCart(GetCart getCart) async {
     getCart.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'cart',
       "appKey": appKey,
       "action": "getCart",
     };
@@ -1186,8 +1452,9 @@ class SphereCommerce {
   void clearWishlist(ClearWishlist clearWishlist) async {
     clearWishlist.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'wishlist',
       "appKey": appKey,
       "action": "clearWishlist",
     };
@@ -1236,8 +1503,9 @@ class SphereCommerce {
       String itemId, RemoveFromWishlist removeFromWishlist) async {
     removeFromWishlist.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'wishlist',
       "appKey": appKey,
       "action": "removeFromWishlist",
       "itemId": itemId,
@@ -1286,8 +1554,9 @@ class SphereCommerce {
   void addToWishlist(String itemId, AddtoWishlist addToWishlist) async {
     addToWishlist.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'wishlist',
       "appKey": appKey,
       "action": "addToWishlist",
       "itemId": itemId,
@@ -1348,8 +1617,9 @@ class SphereCommerce {
   void getWishlist(int page, GetWishlist getWishlist) async {
     getWishlist.onLoading();
 
-    final url = "https://api.plentratechnologies.com/index.php";
+    final url = "https://api.plentrasphere.com/v2/client/index.php";
     final body = {
+      'class': 'wishlist',
       "appKey": appKey,
       "action": "getWishlist",
       "page": page.toString(),

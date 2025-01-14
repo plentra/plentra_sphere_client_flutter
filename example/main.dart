@@ -667,7 +667,6 @@ class CheckoutCartImplementation implements CheckoutCart {
     String currencySymbol,
     double totalAmount,
     String orderId,
-    dynamic clientSecret,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -685,7 +684,6 @@ class CheckoutCartImplementation implements CheckoutCart {
     print("Currency Symbol: $currencySymbol");
     print("Total Amount: $totalAmount");
     print("Order ID: $orderId");
-    print("Client Secret: $clientSecret");
 
     print("Customer Name: $customerName");
     print("Customer Address: $customerAddress");
@@ -703,11 +701,13 @@ class CheckoutCartImplementation implements CheckoutCart {
   }
 
   @override
-  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
-      String paymentGatewayKey) {
-    print("PaymentGateway: $paymentGatewayName");
-    print("PaymentGatewayType: $paymentGatewayType");
-    print("PaymentGatewayKey: $paymentGatewayKey");
+  void onRazorpay(String key) {
+    print(key);
+  }
+
+  @override
+  void onStripe(String clientSecret, String publishableKey) {
+    print("clientSecret: $clientSecret, publishableKey: $publishableKey");
   }
 
   @override
@@ -751,6 +751,12 @@ class CheckoutCartImplementation implements CheckoutCart {
     print("Dates: $dates");
     print("Slots: $slots");
   }
+
+  @override
+  void onPhonePe(String paymentLink) {
+    // TODO: implement onPhonePe
+    print('paymentLink: ' + paymentLink);
+  }
 }
 
 class CheckoutItemVariantImplementation implements CheckoutItemVariant {
@@ -763,7 +769,6 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
     String currencySymbol,
     double totalAmount,
     String orderId,
-    dynamic clientSecret,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -780,7 +785,6 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
     print("Currency Symbol: $currencySymbol");
     print("Total Amount: $totalAmount");
     print("Order ID: $orderId");
-    print("Client Secret: $clientSecret");
 
     print("Customer Name: $customerName");
     print("Customer Address: $customerAddress");
@@ -800,14 +804,6 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
   @override
   void onPinCodeNotServicable() {
     print("Pincode not serviceable");
-  }
-
-  @override
-  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
-      String paymentGatewayKey) {
-    print("PaymentGateway: $paymentGatewayName");
-    print("PaymentGatewayType: $paymentGatewayType");
-    print("PaymentGatewayKey: $paymentGatewayKey");
   }
 
   @override
@@ -850,6 +846,21 @@ class CheckoutItemVariantImplementation implements CheckoutItemVariant {
     print("Dates: $dates");
     print("Slots: $slots");
   }
+
+  @override
+  void onRazorpay(String key) {
+    // TODO: implement onRazorpay
+  }
+
+  @override
+  void onStripe(String clientSecret, String publishableKey) {
+    // TODO: implement onStripe
+  }
+  @override
+  void onPhonePe(String paymentLink) {
+    // TODO: implement onPhonePe
+    print('paymentLink: ' + paymentLink);
+  }
 }
 
 class CheckoutItemImplementation implements CheckoutItem {
@@ -862,7 +873,6 @@ class CheckoutItemImplementation implements CheckoutItem {
     String currencySymbol,
     double totalAmount,
     String orderId,
-    dynamic clientSecret,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -880,7 +890,6 @@ class CheckoutItemImplementation implements CheckoutItem {
     print("Currency Symbol: $currencySymbol");
     print("Total Amount: $totalAmount");
     print("Order ID: $orderId");
-    print("Client Secret: $clientSecret");
 
     print("Customer Name: $customerName");
     print("Customer Address: $customerAddress");
@@ -950,6 +959,21 @@ class CheckoutItemImplementation implements CheckoutItem {
   @override
   void onVariants(variantTags) {
     print("Variants: $variantTags");
+  }
+
+  @override
+  void onRazorpay(String key) {
+    // TODO: implement onRazorpay
+  }
+
+  @override
+  void onStripe(String clientSecret, String publishableKey) {
+    // TODO: implement onStripe
+  }
+  @override
+  void onPhonePe(String paymentLink) {
+    // TODO: implement onPhonePe
+    print('paymentLink: ' + paymentLink);
   }
 }
 

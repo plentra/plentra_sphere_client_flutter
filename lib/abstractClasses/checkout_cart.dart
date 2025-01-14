@@ -7,7 +7,6 @@ abstract class CheckoutCart {
     String currencySymbol,
     double totalAmount,
     String orderId,
-    dynamic clientSecret,
     String customerName,
     String customerAddress,
     String customerCity,
@@ -18,8 +17,9 @@ abstract class CheckoutCart {
     List<dynamic> items,
   );
   void onPinCodeNotServicable();
-  void onPaymentGateway(String paymentGatewayName, int paymentGatewayType,
-      String paymentGatewayKey);
+  void onRazorpay(String key);
+  void onStripe(String clientSecret, String publishableKey);
+  void onPhonePe(String paymentLink);
   void onLoading();
   void onLoadfinished();
   void onEmpty();

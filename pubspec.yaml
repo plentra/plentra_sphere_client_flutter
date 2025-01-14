@@ -1,6 +1,6 @@
 name: plentra_sphere_client
 description: "Plentra Sphere Client for Flutter enables effortless creation of custom apps tailored for Flutter. Seamlessly integrate your business with our powerful library, empowering creativity without complex code. From startups to enterprises, harness the full potential of Flutter for exceptional web and mobile experiences."
-version: 1.0.14
+version: 2.0.11
 homepage: https://plentrasphere.com/
 
 environment:

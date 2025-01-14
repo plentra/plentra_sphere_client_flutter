@@ -34,6 +34,7 @@ export 'abstractClasses/get_page.dart';
 export 'abstractClasses/get_home_load_more.dart';
 export 'abstractClasses/get_home.dart';
 export 'abstractClasses/plentra_login.dart';
+export 'abstractClasses/confirmPhonePePayment.dart';
 
 export 'sphereBasic.dart';
 export 'sphereCommerce.dart';

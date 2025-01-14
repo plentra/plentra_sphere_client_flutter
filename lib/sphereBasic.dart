@@ -36,7 +36,8 @@ class SphereBasic {
       return;
     }
 
-    final loginUrl = "https://api.plentratechnologies.com/accounts/index.php";
+    final loginUrl =
+        "https://api.plentrasphere.com/v2/client/accounts/index.php";
     final loginBody = {
       "email": emailId,
       "password": password,
@@ -74,7 +75,8 @@ class SphereBasic {
 
       final loginToken = loginData['token'];
 
-      final adminUrl = "https://api.plentratechnologies.com/admin/index.php";
+      final adminUrl =
+          "https://api.plentrasphere.com/v2/client/admin/index.php";
       final adminBody = {
         "action": "loggin",
         "token": loginToken,
@@ -112,7 +114,7 @@ class SphereBasic {
     getCommerceInfo.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getCommerceInfo&appKey=$appKey');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getCommerceInfo&appKey=$appKey');
 
     try {
       final response = await http.get(url);
@@ -172,7 +174,7 @@ class SphereBasic {
     getAppInfo.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getAppInfo&appKey=$appKey');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getAppInfo&appKey=$appKey');
 
     try {
       final response = await http.get(url);
@@ -226,7 +228,7 @@ class SphereBasic {
     getItem.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getItem&appKey=${this.appKey}&itemId=$itemId');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getItem&appKey=${this.appKey}&itemId=$itemId');
 
     try {
       final response = await http.get(url);
@@ -327,7 +329,7 @@ class SphereBasic {
     getVariant.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getVariant&appKey=$appKey&variantId=$variantId');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getVariant&appKey=$appKey&variantId=$variantId');
 
     try {
       final response = await http.get(url);
@@ -394,7 +396,7 @@ class SphereBasic {
     getItemsLoadMore.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getItems&appKey=$appKey&page=$itemsPageNumber&categoryId=$itemCategory');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getItems&appKey=$appKey&page=$itemsPageNumber&categoryId=$itemCategory');
 
     try {
       final response = await http.get(url);
@@ -483,7 +485,7 @@ class SphereBasic {
     getItems.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getItems&appKey=$appKey&page=1&categoryId=$itemCategory');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getItems&appKey=$appKey&page=1&categoryId=$itemCategory');
 
     try {
       final response = await http.get(url);
@@ -598,7 +600,7 @@ class SphereBasic {
     getItems.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getItemsSearch&appKey=$appKey&page=1&itemName=$itemName');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getItemsSearch&appKey=$appKey&page=1&itemName=$itemName');
 
     try {
       final response = await http.get(url);
@@ -693,7 +695,7 @@ class SphereBasic {
     getItemsLoadMore.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getItemsSearch&appKey=$appKey&page=$itemsPageNumber&itemName=$itemName');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getItemsSearch&appKey=$appKey&page=$itemsPageNumber&itemName=$itemName');
 
     try {
       final response = await http.get(url);
@@ -782,7 +784,7 @@ class SphereBasic {
     getLauncherLoadMore.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getLauncher&appKey=$appKey&page=$launcherPageNumber&launcherId=$launcherId');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getLauncher&appKey=$appKey&page=$launcherPageNumber&launcherId=$launcherId');
 
     try {
       final response = await http.get(url);
@@ -870,7 +872,7 @@ class SphereBasic {
     getLauncher.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getLauncher&appKey=$appKey&page=1&launcherId=$launcherId');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getLauncher&appKey=$appKey&page=1&launcherId=$launcherId');
 
     try {
       final response = await http.get(url);
@@ -985,7 +987,7 @@ class SphereBasic {
     getPage.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getPage&appKey=$appKey&pageTitle=$pageTitle');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getPage&appKey=$appKey&pageTitle=$pageTitle');
 
     try {
       final response = await http.get(url);
@@ -1067,7 +1069,7 @@ class SphereBasic {
     getHomeLoadMore.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getHome&appKey=$appKey&page=$homePageNumber');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getHome&appKey=$appKey&page=$homePageNumber');
 
     try {
       final response = await http.get(url);
@@ -1155,7 +1157,7 @@ class SphereBasic {
     getHome.onLoading();
 
     final url = Uri.parse(
-        'https://api.plentratechnologies.com/?action=getHome&appKey=$appKey&page=1');
+        'https://api.plentrasphere.com/v2/client/?class=default&action=getHome&appKey=$appKey&page=1');
 
     try {
       final response = await http.get(url);
